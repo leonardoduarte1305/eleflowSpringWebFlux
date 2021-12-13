@@ -2,8 +2,8 @@ package br.com.processo.principal.service;
 
 import java.util.List;
 
+import br.com.processo.principal.controller.PlanetaDTOEntrada;
 import br.com.processo.principal.document.Planeta;
-import br.com.processo.principal.document.PlanetaDTOEntrada;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 

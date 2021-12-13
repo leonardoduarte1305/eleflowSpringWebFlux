@@ -6,32 +6,30 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
-import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.bind.support.WebExchangeBindException;
 
-@RestControllerAdvice
+@ControllerAdvice
 public class ErroDeEntradaHandler {
 
 	@Autowired
 	private MessageSource messageSource;
 
-	@ResponseStatus(code = HttpStatus.BAD_REQUEST)
-	@ExceptionHandler(MethodArgumentNotValidException.class)
-	public List<ErroDeEntrada> handle(MethodArgumentNotValidException exception) {
+	@ExceptionHandler(WebExchangeBindException.class)
+	public ResponseEntity<List<ErroDeEntrada>> handleException(WebExchangeBindException e) {
 
 		List<ErroDeEntrada> erros = new ArrayList<ErroDeEntrada>();
-		List<FieldError> fieldErrors = exception.getBindingResult().getFieldErrors();
+		List<FieldError> fieldErrors = e.getBindingResult().getFieldErrors();
 
-		fieldErrors.forEach(e -> {
-			String mensagem = messageSource.getMessage(e, LocaleContextHolder.getLocale());
-			ErroDeEntrada erro = new ErroDeEntrada(e.getField(), mensagem);
+		fieldErrors.forEach(err -> {
+			String mensagem = messageSource.getMessage(err, LocaleContextHolder.getLocale());
+			ErroDeEntrada erro = new ErroDeEntrada(err.getField(), mensagem);
 			erros.add(erro);
 		});
 
-		return erros;
+		return ResponseEntity.badRequest().body(erros);
 	}
 }

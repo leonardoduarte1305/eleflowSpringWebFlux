@@ -5,6 +5,7 @@ import java.io.Serializable;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import br.com.processo.principal.controller.PlanetaDTOEntrada;
 import br.com.processo.principal.webservice.SWAPIPlaneta;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
