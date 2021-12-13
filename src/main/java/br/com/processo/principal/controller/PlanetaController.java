@@ -16,6 +16,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.processo.principal.document.Planeta;
 import br.com.processo.principal.service.PlanetaService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -28,32 +31,47 @@ public class PlanetaController {
 	@Autowired
 	private PlanetaService service;
 
+	@Operation(summary = "Listar planetas cadastrados.", //
+			description = "Lista todos os planetas cadastrados no nosso banco de dados")
 	@GetMapping
 	public Flux<Planeta> listarPlanetasDoBanco() {
 		return service.listarPlanetasDoBanco();
 	}
 
+	@Operation(summary = "Buscar um planeta pelo seu Id.", //
+			description = "Traz o planeta cadastrado usando seu id (String) como chave para busca.", parameters = {
+					@Parameter(name = "id", in = ParameterIn.PATH, required = true, description = "atributo Id") })
 	@GetMapping(value = "/{id}")
 	Mono<Planeta> buscarPorIdDoBanco(@PathVariable String id) {
 		return service.buscarPorIdDoBanco(id);
 	}
 
+	@Operation(summary = "Exclui um planeta pelo seu Id.", //
+			description = "Exclui o planeta cadastrado usando seu id (String) como chave para a operação.", parameters = {
+					@Parameter(name = "id", in = ParameterIn.PATH, description = "atributo Id") })
 	@DeleteMapping(value = "/{id}")
 	Mono<Void> removerPlaneta(@PathVariable String id) {
 		return service.removerPlaneta(id);
 	}
 
+	@Operation(summary = "Cadastra um planeta.", //
+			description = "Cadastra um novo planeta.")
 	@PostMapping
 	@ResponseStatus(code = HttpStatus.CREATED)
-	public Mono<Planeta> adicionarUmPlaneta(@Validated @RequestBody PlanetaDTOEntrada planeta) {
+	public Mono<Planeta> adicionarUmPlaneta(@Validated @RequestBody final PlanetaDTOEntrada planeta) {
 		return service.adicionarUmPlaneta(planeta);
 	}
 
+	@Operation(summary = "Buscar um planeta pelo seu nome.", //
+			description = "Traz o planeta cadastrado usando seu nome como chave para busca.", parameters = {
+					@Parameter(name = "nome", in = ParameterIn.PATH, required = true, description = "atributo nome") })
 	@GetMapping(value = "/nome/{nome}")
 	Flux<Planeta> buscarPorNomeDoBanco(@PathVariable String nome) {
 		return service.buscarPorNomeDoBanco(nome);
 	}
 
+	@Operation(summary = "Listar planetas cadastrados no site SWAPI.dev.", //
+			description = "Lista todos os planetas cadastrados no site SWAPI.dev.")
 	@GetMapping(value = "/swapi")
 	public Flux<List<Planeta>> listarPlanetasDoSWAPI() {
 		return service.listarPlanetasDoSWAPI();
