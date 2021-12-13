@@ -12,8 +12,9 @@ import io.swagger.v3.oas.annotations.info.Info;
 		title = "Api Eleflux", //
 		version = "1.0", //
 		description = "Documentação da API v1.0", //
-		contact = @Contact(name = "Leonardo Duarte", url = "", // TODO url do Heroku
-				email = "leonardoduarte1305@gmail.com")))
+		contact = @Contact(name = "Leonardo Duarte", //
+				email = "leonardoduarte1305@gmail.com", //
+				url = "https://leoduarteeleflowwebflux.herokuapp.com/"))) //
 public class LeoDuarteJavaBackWebFluxApplication {
 
 	public static void main(String[] eleflow) {
