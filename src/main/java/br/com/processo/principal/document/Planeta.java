@@ -5,6 +5,7 @@ import java.io.Serializable;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import br.com.processo.principal.webservice.SWAPIPlaneta;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -38,6 +39,12 @@ public class Planeta implements Serializable {
 		this.nome = planetaDTO.getNome();
 		this.clima = planetaDTO.getClima();
 		this.terreno = planetaDTO.getTerreno();
+	}
+
+	public Planeta(SWAPIPlaneta swapiPlanet) {
+		this.nome = swapiPlanet.getName();
+		this.clima = swapiPlanet.getClimate();
+		this.terreno = swapiPlanet.getTerrain();
 	}
 
 }

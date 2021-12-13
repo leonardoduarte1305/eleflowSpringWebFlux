@@ -2,7 +2,6 @@ package br.com.processo.principal.service;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,7 +9,6 @@ import org.springframework.stereotype.Service;
 import br.com.processo.principal.document.Planeta;
 import br.com.processo.principal.document.PlanetaDTOEntrada;
 import br.com.processo.principal.repository.PlanetaRepository;
-import br.com.processo.principal.service.exception.EntidadeJaExistenteException;
 import br.com.processo.principal.webservice.SWAPIPlaneta;
 import br.com.processo.principal.webservice.SWAPIService;
 import reactor.core.publisher.Flux;
@@ -41,17 +39,15 @@ public class PlanetaServiceImpl implements PlanetaService {
 	public Mono<Planeta> adicionarUmPlaneta(PlanetaDTOEntrada planetaDTO) {
 
 		// Verifica se o Planeta já está no banco de dados
-		Mono<Planeta> encontrado = repository.findByNomeIgnoringCase(planetaDTO.getNome());
-		try {
-			if (encontrado.toFuture().get() != null) {
-				return Mono.error(new EntidadeJaExistenteException("Planeta já cadastrado"));
-			}
-		} catch (InterruptedException | ExecutionException e) {
-			e.getMessage();
-		}
+		/*
+		 * Mono<Planeta> encontrado =
+		 * repository.findByNomeIgnoringCase(planetaDTO.getNome()); try { if
+		 * (encontrado.toFuture().get() != null) { return Mono.error(new
+		 * EntidadeJaExistenteException("Planeta já cadastrado")); } } catch
+		 * (InterruptedException | ExecutionException e) { e.getMessage(); }
+		 */
 
-		// Se não foi cadastrado ainda, vai buscar se e quantas vezes ele apareceu em
-		// algum filme da série
+		// Vai buscar se e quantas vezes ele apareceu em algum filme da série
 		Integer quantidade = 0;
 		try {
 			quantidade = new SWAPIService().buscarQntAparicoes(planetaDTO.getNome());
@@ -66,21 +62,21 @@ public class PlanetaServiceImpl implements PlanetaService {
 	}
 
 	@Override
-	public Mono<Planeta> buscarPorNomeDoBanco(String nome) {
+	public Flux<Planeta> buscarPorNomeDoBanco(String nome) {
 		return repository.findByNomeIgnoringCase(nome);
 	}
 
+	// TODO SERVICE service.listarPlanetasDoSWAPI()
 	@Override
-	public Flux<List<SWAPIPlaneta>> listarPlanetasDoSWAPI() {
+	public Flux<List<Planeta>> listarPlanetasDoSWAPI() {
 
 		try {
 			return new SWAPIService().buscarPlanetasSWAPI();
-
 		} catch (IOException | InterruptedException e) {
 			e.getMessage();
 		}
 
-		return null;
+		return Flux.just();
 	}
 
 }

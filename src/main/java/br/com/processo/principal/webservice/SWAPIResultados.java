@@ -12,6 +12,8 @@ import lombok.Setter;
 @Setter
 public class SWAPIResultados implements Serializable {
 
+	private static final long serialVersionUID = 2146802749173733655L;
+
 	@JsonProperty("count")
 	private Long count;
 

@@ -4,7 +4,6 @@ import java.util.List;
 
 import br.com.processo.principal.document.Planeta;
 import br.com.processo.principal.document.PlanetaDTOEntrada;
-import br.com.processo.principal.webservice.SWAPIPlaneta;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -14,9 +13,9 @@ public interface PlanetaService {
 
 	Flux<Planeta> listarPlanetasDoBanco();
 
-	Flux<List<SWAPIPlaneta>> listarPlanetasDoSWAPI();
+	Flux<List<Planeta>> listarPlanetasDoSWAPI();
 
-	Mono<Planeta> buscarPorNomeDoBanco(String nome);
+	Flux<Planeta> buscarPorNomeDoBanco(String nome);
 
 	Mono<Planeta> buscarPorIdDoBanco(String id);
 

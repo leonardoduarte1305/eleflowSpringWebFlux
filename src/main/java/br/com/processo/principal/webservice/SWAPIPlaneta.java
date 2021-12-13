@@ -6,12 +6,15 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import br.com.processo.principal.document.Planeta;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
 public class SWAPIPlaneta implements Serializable {
+
+	private static final long serialVersionUID = -6051453722452187796L;
 
 	@JsonProperty("name")
 	private String name;

@@ -48,12 +48,13 @@ public class PlanetaController {
 	}
 
 	@GetMapping(value = "/nome/{nome}")
-	Mono<Planeta> buscarPorNomeDoBanco(@PathVariable String nome) {
+	Flux<Planeta> buscarPorNomeDoBanco(@PathVariable String nome) {
 		return service.buscarPorNomeDoBanco(nome);
 	}
 
+	// TODO CONTROLLER service.listarPlanetasDoSWAPI()
 	@GetMapping(value = "/swapi")
-	public Flux<List<SWAPIPlaneta>> listarPlanetasDoSWAPI() {
+	public Flux<List<Planeta>> listarPlanetasDoSWAPI() {
 		return service.listarPlanetasDoSWAPI();
 	}
 

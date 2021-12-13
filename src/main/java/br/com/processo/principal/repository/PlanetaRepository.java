@@ -4,11 +4,11 @@ import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 import org.springframework.stereotype.Repository;
 
 import br.com.processo.principal.document.Planeta;
-import reactor.core.publisher.Mono;
+import reactor.core.publisher.Flux;
 
 @Repository
 public interface PlanetaRepository extends ReactiveMongoRepository<Planeta, String> {
 
-	Mono<Planeta> findByNomeIgnoringCase(String nome);
+	Flux<Planeta> findByNomeIgnoringCase(String nome);
 
 }
