@@ -1,33 +1,11 @@
 package br.com.processo.principal.controller;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
-import java.util.List;
-
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.reactive.server.EntityExchangeResult;
-import org.springframework.test.web.reactive.server.WebTestClient;
-
-import br.com.processo.principal.document.Planeta;
-import br.com.processo.principal.service.PlanetaService;
-import reactor.core.publisher.Mono;
-
 //@RunWith(SpringRunner.class)
 //@WebFluxTest(PlanetaController.class)
 //@SpringBootTest
 public class PlanetaControllerTest {
 
-	@Autowired
+	/*@Autowired
 	WebTestClient client;// = WebTestClient.bindToController(new
 							// PlanetaController()).configureClient().baseUrl("/planetas").build();
 
@@ -99,5 +77,5 @@ public class PlanetaControllerTest {
 
 		assertTrue(("tatooine").equals(resultado.getResponseBody().getNome()));
 	}
-
+*/
 }
