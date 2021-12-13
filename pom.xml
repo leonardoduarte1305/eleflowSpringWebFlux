@@ -11,7 +11,7 @@
 	</parent>
 	<groupId>br.com.processo</groupId>
 	<artifactId>LeoDuarteJavaBackWebFlux</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0</version>
 	<name>LeoDuarteJavaBackWebFlux</name>
 	<description>StarWars e WebFlux</description>
 	<properties>
@@ -78,6 +78,15 @@
 
 	<build>
 		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.0</version>
+				<configuration>
+					<source>11</source>
+					<target>11</target>
+				</configuration>
+			</plugin>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
