@@ -14,7 +14,7 @@ import io.swagger.v3.oas.annotations.info.Info;
 		description = "Documentação da API v1.0", //
 		contact = @Contact(name = "Leonardo Duarte", //
 				email = "leonardoduarte1305@gmail.com", //
-				url = "https://leoduarteeleflowwebflux.herokuapp.com/"))) //
+				url = "https://leoduarteeleflowwebflux.herokuapp.com/webjars/swagger-ui/index.html?configUrl=/v3/api-docs/swagger-config"))) //
 public class LeoDuarteJavaBackWebFluxApplication {
 
 	public static void main(String[] eleflow) {

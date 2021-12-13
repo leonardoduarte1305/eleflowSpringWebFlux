@@ -46,6 +46,7 @@ public class Planeta implements Serializable {
 		this.nome = swapiPlanet.getName();
 		this.clima = swapiPlanet.getClimate();
 		this.terreno = swapiPlanet.getTerrain();
+		this.qtdAparicoesFilmes = swapiPlanet.getFilms().size();
 	}
 
 }
