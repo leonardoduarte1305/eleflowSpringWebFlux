@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import br.com.processo.principal.document.Planeta;
 import br.com.processo.principal.document.PlanetaDTOEntrada;
 import br.com.processo.principal.repository.PlanetaRepository;
-import br.com.processo.principal.webservice.SWAPIPlaneta;
 import br.com.processo.principal.webservice.SWAPIService;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -38,15 +37,6 @@ public class PlanetaServiceImpl implements PlanetaService {
 	@Override
 	public Mono<Planeta> adicionarUmPlaneta(PlanetaDTOEntrada planetaDTO) {
 
-		// Verifica se o Planeta já está no banco de dados
-		/*
-		 * Mono<Planeta> encontrado =
-		 * repository.findByNomeIgnoringCase(planetaDTO.getNome()); try { if
-		 * (encontrado.toFuture().get() != null) { return Mono.error(new
-		 * EntidadeJaExistenteException("Planeta já cadastrado")); } } catch
-		 * (InterruptedException | ExecutionException e) { e.getMessage(); }
-		 */
-
 		// Vai buscar se e quantas vezes ele apareceu em algum filme da série
 		Integer quantidade = 0;
 		try {
@@ -66,7 +56,6 @@ public class PlanetaServiceImpl implements PlanetaService {
 		return repository.findByNomeIgnoringCase(nome);
 	}
 
-	// TODO SERVICE service.listarPlanetasDoSWAPI()
 	@Override
 	public Flux<List<Planeta>> listarPlanetasDoSWAPI() {
 

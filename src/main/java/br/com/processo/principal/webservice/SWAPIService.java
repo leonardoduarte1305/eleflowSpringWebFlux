@@ -21,6 +21,8 @@ public class SWAPIService {
 	private final static String URL_BASE = "https://swapi.dev/api/planets/";
 	private HttpClient client;
 	private ObjectMapper mapper;
+	private HttpRequest request;
+	private HttpResponse<String> response;
 
 	public SWAPIService() {
 		mapper = new ObjectMapper();
@@ -28,20 +30,13 @@ public class SWAPIService {
 		client = HttpClient.newBuilder().build();
 	}
 
-	// TODO WEBSERVICE service.listarPlanetasDoSWAPI()
 	public Flux<List<Planeta>> buscarPlanetasSWAPI() throws IOException, InterruptedException {
 		List<Planeta> encontrados = new ArrayList<>();
-		int page = 1;
+		Integer page = 1;
 
 		while (page != 0) {
-			HttpRequest request = HttpRequest.newBuilder() //
-					.GET() //
-					.header("Content-Type", "application/json") //
-					.uri(URI.create(URL_BASE + "?page=" + page)) //
-					.timeout(Duration.ofSeconds(10)) //
-					.build();
-
-			HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
+			request = pesquisarComArgumento("?page=", page.toString());
+			response = client.send(request, BodyHandlers.ofString());
 
 			SWAPIResultados resultado = mapper.readValue(response.body(), new TypeReference<SWAPIResultados>() {
 			});
@@ -61,14 +56,8 @@ public class SWAPIService {
 	public Integer buscarQntAparicoes(String nome) throws IOException, InterruptedException {
 		String nomePesquisa = nome.replace(" ", "+");
 
-		HttpRequest request = HttpRequest.newBuilder() //
-				.GET() //
-				.header("Content-Type", "application/json") //
-				.uri(URI.create(URL_BASE + "/?search=" + nomePesquisa)) //
-				.timeout(Duration.ofSeconds(10)) //
-				.build();
-
-		HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
+		request = pesquisarComArgumento("/?search=", nomePesquisa);
+		response = client.send(request, BodyHandlers.ofString());
 
 		SWAPIResultados resultado = mapper.readValue(response.body(), new TypeReference<SWAPIResultados>() {
 		});
@@ -80,55 +69,13 @@ public class SWAPIService {
 		return resultado.getResults().get(0).getFilms().size();
 	}
 
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	public static void main(String[] args) throws IOException, InterruptedException {
-		ObjectMapper mapper = new ObjectMapper();
-		mapper.findAndRegisterModules();
-		HttpClient client = HttpClient.newBuilder().build();
-
-		int page = 1;
-
-		while (page != 0) {
-			HttpRequest request = HttpRequest.newBuilder() //
-					.GET() //
-					.header("Content-Type", "application/json") //
-					.uri(URI.create(URL_BASE + "?page=" + page)) //
-					.timeout(Duration.ofSeconds(10)) //
-					.build();
-
-			HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
-
-			SWAPIResultados resultado = mapper.readValue(response.body(), new TypeReference<SWAPIResultados>() {
-			});
-
-			System.out.println("Page: " + page);
-			System.out.println(resultado.getResults());
-			System.out.println("\n\n\n\n");
-
-			if (resultado.getNext() != null) {
-				page++;
-			} else {
-				page = 0;
-			}
-		}
-
+	private HttpRequest pesquisarComArgumento(String arg, String pesquisarPor) {
+		return HttpRequest.newBuilder() //
+				.GET() //
+				.header("Content-Type", "application/json") //
+				.uri(URI.create(URL_BASE + arg + pesquisarPor)) //
+				.timeout(Duration.ofSeconds(10)) //
+				.build();
 	}
+
 }
