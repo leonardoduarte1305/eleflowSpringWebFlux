@@ -1,0 +1,140 @@
+{
+	"info": {
+		"_postman_id": "96af58e7-8115-4255-bacc-3df7716926de",
+		"name": "API-WebFlux",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "POST",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"nome\": \"Tatooine\",\r\n    \"clima\": \"seco\",\r\n    \"terreno\": \"Aquatico\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/planetas/",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"planetas",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET Todos",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/planetas/",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"planetas",
+						""
+					],
+					"query": [
+						{
+							"key": "",
+							"value": "",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET Todos SWAPI",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/planetas/swapi",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"planetas",
+						"swapi"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET por NOME",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/planetas/nome/Plutao",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"planetas",
+						"nome",
+						"Plutao"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET por ID",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/planetas/61b73cf5c00b6870fd837379",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"planetas",
+						"61b73cf5c00b6870fd837379"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/planetas/61b7345e79e0a201aa071efc",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"planetas",
+						"61b7345e79e0a201aa071efc"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
