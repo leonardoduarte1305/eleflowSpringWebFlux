@@ -19,6 +19,6 @@ public interface PlanetaService {
 
 	Mono<Planeta> buscarPorIdDoBanco(String id);
 
-	Mono<Void> removerPlaneta(String id);
+	Mono<Boolean> removerPlaneta(String id);
 
 }

@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import br.com.processo.principal.controller.PlanetaDTOEntrada;
 import br.com.processo.principal.document.Planeta;
 import br.com.processo.principal.repository.PlanetaRepository;
-import br.com.processo.principal.service.exception.ElementoNaoEncontradoException;
 import br.com.processo.principal.webservice.SWAPIService;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -27,13 +26,15 @@ public class PlanetaServiceImpl implements PlanetaService {
 
 	@Override
 	public Mono<Planeta> buscarPorIdDoBanco(String id) {
-		return repository.findById(id) //
-				.switchIfEmpty(Mono.error(new ElementoNaoEncontradoException("Elemento não encontrado")));
+		return repository.findById(id);
 	}
 
 	@Override
-	public Mono<Void> removerPlaneta(String id) {
-		return repository.deleteById(id);
+	public Mono<Boolean> removerPlaneta(String id) {
+		return repository.findById(id) //
+				.flatMap(planeta -> repository.delete(planeta) //
+						.then(Mono.just(Boolean.TRUE))) //
+				.defaultIfEmpty(Boolean.FALSE);
 	}
 
 	@Override
@@ -55,8 +56,7 @@ public class PlanetaServiceImpl implements PlanetaService {
 
 	@Override
 	public Flux<Planeta> buscarPorNomeDoBanco(String nome) {
-		return repository.findByNomeIgnoringCase(nome) //
-				.switchIfEmpty(Mono.error(new ElementoNaoEncontradoException("Nome não encontrado.")));
+		return repository.findByNomeIgnoringCaseContaining(nome);
 	}
 
 	@Override

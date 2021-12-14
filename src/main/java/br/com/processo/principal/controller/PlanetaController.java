@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -42,7 +43,7 @@ public class PlanetaController {
 			description = "Traz o planeta cadastrado usando seu id (String) como chave para busca.", parameters = {
 					@Parameter(name = "id", in = ParameterIn.PATH, required = true, description = "atributo Id") })
 	@GetMapping(value = "/{id}")
-	Mono<Planeta> buscarPorIdDoBanco(@PathVariable String id) {
+	public Mono<Planeta> buscarPorIdDoBanco(@PathVariable String id) {
 		return service.buscarPorIdDoBanco(id);
 	}
 
@@ -50,8 +51,11 @@ public class PlanetaController {
 			description = "Exclui o planeta cadastrado usando seu id (String) como chave para a operação.", parameters = {
 					@Parameter(name = "id", in = ParameterIn.PATH, description = "atributo Id") })
 	@DeleteMapping(value = "/{id}")
-	Mono<Void> removerPlaneta(@PathVariable String id) {
-		return service.removerPlaneta(id);
+	public Mono<ResponseEntity<String>> removerPlaneta(@PathVariable String id) {
+		return service.removerPlaneta(id) //
+				.filter(deletado -> deletado) //
+				.map(deletado -> new ResponseEntity<>("Removido", HttpStatus.ACCEPTED)) //
+				.defaultIfEmpty(new ResponseEntity<>(HttpStatus.NOT_FOUND));
 	}
 
 	@Operation(summary = "Cadastra um planeta.", //
@@ -66,7 +70,7 @@ public class PlanetaController {
 			description = "Traz o planeta cadastrado usando seu nome como chave para busca.", parameters = {
 					@Parameter(name = "nome", in = ParameterIn.PATH, required = true, description = "atributo nome") })
 	@GetMapping(value = "/nome/{nome}")
-	Flux<Planeta> buscarPorNomeDoBanco(@PathVariable String nome) {
+	public Flux<Planeta> buscarPorNomeDoBanco(@PathVariable String nome) {
 		return service.buscarPorNomeDoBanco(nome);
 	}
 

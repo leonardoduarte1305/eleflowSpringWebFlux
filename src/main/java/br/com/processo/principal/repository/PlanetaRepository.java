@@ -11,4 +11,6 @@ public interface PlanetaRepository extends ReactiveMongoRepository<Planeta, Stri
 
 	Flux<Planeta> findByNomeIgnoringCase(String nome);
 
+	Flux<Planeta> findByNomeIgnoringCaseContaining(String nome);
+
 }
