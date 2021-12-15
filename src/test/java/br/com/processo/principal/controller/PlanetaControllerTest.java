@@ -7,32 +7,44 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.Before;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.AutoConfigureDataMongo;
-import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
+import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.WebTestClient;
+import org.springframework.test.web.reactive.server.WebTestClient.ResponseSpec;
 
+import br.com.processo.principal.config.erros.ErroDeEntrada;
 import br.com.processo.principal.document.Planeta;
 import br.com.processo.principal.repository.PlanetaRepository;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
-@WebFluxTest
+//@WebFluxTest
 
 //@ExtendWith(SpringExtension.class)
 //@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-//@AutoConfigureWebTestClient
 //@DirtiesContext
 
 //@DataMongoTest
 //@RunWith(SpringRunner.class)
-@AutoConfigureDataMongo
 //@SpringBootTest
 //@DirtiesContext
+
+//@DataMongoTest
+//@ExtendWith(SpringExtension.class)
+
+@AutoConfigureDataMongo
+@AutoConfigureWebTestClient
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class PlanetaControllerTest {
 
 	@Autowired
@@ -47,61 +59,173 @@ public class PlanetaControllerTest {
 			new Planeta("Planeta 3", "Clima 3", "Terreno 3"), //
 			new Planeta("Planeta 4", "Clima 4", "Terreno 4"));
 
-	@Before
+	@BeforeEach
 	public void setup() {
 		repository.deleteAll().thenMany(Flux.fromIterable(listaExemplo)) //
 				.flatMap(repository::save).doOnNext((item -> System.err.println(item))).blockLast();
 	}
 
-	@Test
-	public void dbNaoDeveEstarVazio() {
-
-		Flux<Planeta> encontrado = repository.findByNomeIgnoringCaseContaining("Planeta 1");
-
-		StepVerifier.create(encontrado).assertNext(planeta -> {
-			assertEquals("Terreno 1", planeta.getTerreno());
-			assertEquals("Clima 1", planeta.getClima());
-			assertNotNull(planeta.getId());
-
-		}).expectComplete().verify();
-
-		Mono<Long> total = repository.findByNomeIgnoringCase("Planeta 1").count();
-		System.err.println(total.block());
-		assertTrue(total.block().equals(4));
-
+	@AfterEach
+	public void tearDown() {
+		repository.deleteAll();
 	}
 
 	@Test
-	public void deveRetornarTodosOsPlanetas() {
-
+	@Order(1)
+	public void deveContarQuantosPlanetasVoltamNaPesquisa() {
 		StepVerifier.create(repository.findAll()).expectSubscription().expectNextCount(4).verifyComplete();
 	}
 
 	@Test
-	public void deveContarQuantosPlanetasVoltamNaPesquisa() {
-		client.get().uri("/planetas").exchange().expectStatus().isOk().expectHeader()
-				.contentType(MediaType.APPLICATION_JSON).expectBodyList(Planeta.class).hasSize(4).consumeWith(p -> {
-					List<Planeta> planetas = p.getResponseBody();
+	@Order(2)
+	public void deveBuscarPlanetaPorId() {
 
-					planetas.forEach(plan -> {
-						assertTrue(plan.getId() != null);
-					});
-				});
+		Planeta esperado = repository.findByNomeIgnoringCase("Planeta 1").blockFirst();
+		String id = esperado.getId();
+
+		client.get().uri("/planetas/" + id).exchange().expectStatus().isOk().expectHeader()
+				.contentType(MediaType.APPLICATION_JSON).expectBodyList(Planeta.class)
+				.value(item -> item.get(0).getId().equals(esperado.getId()));
 	}
 
 	@Test
-	public void deveRetornarListaComPlanetas() {
-		WebTestClient.ResponseSpec response = client.get().uri("/planetas").exchange();
+	@Order(3)
+	public void naoDeveEncontrarPlanetaComIdInexistente() {
 
-		response.expectStatus().is2xxSuccessful().expectBodyList(Planeta.class).isEqualTo(List.of());
+		client.get().uri("/planetas/" + "inexistente").exchange().expectStatus().is2xxSuccessful().expectBody()
+				.isEmpty();
 	}
 
 	@Test
-	public void deveRetornarUmPlaneta() {
-		WebTestClient.ResponseSpec response = client.get().uri("/planetas/nome/Planeta 1").exchange();
+	@Order(4)
+	public void deveRemoverPlanetaDoBanco() {
+		Planeta esperado = repository.findByNomeIgnoringCase("Planeta 1").blockFirst();
+		String id = esperado.getId();
 
-		Planeta encontrado = repository.findByNomeIgnoringCase("Planeta 1").blockFirst();
+		client.delete().uri("/planetas/" + id).exchange().expectStatus().isAccepted().expectBody().equals("Removido");
+	}
 
-		response.expectStatus().is2xxSuccessful().expectBodyList(Planeta.class).contains(encontrado);
+	@Test
+	@Order(5)
+	public void naoDeveRemoverPlanetaComIdInvalido() {
+		client.delete().uri("/planetas/" + "id_qualquer").exchange().expectStatus().isNotFound();
+	}
+
+	@Test
+	@Order(6)
+	public void deveSalvarPlanetaNoBanco() {
+		PlanetaDTOEntrada planetaDTO = new PlanetaDTOEntrada();
+		planetaDTO.setNome("Nome novo");
+		planetaDTO.setClima("Semi-árido");
+		planetaDTO.setTerreno("Rochoso");
+
+		Planeta salvo = client.post().uri("/planetas/").bodyValue(planetaDTO).exchange().expectStatus().isCreated()
+				.expectBody(Planeta.class).returnResult().getResponseBody();
+
+		assertTrue(salvo.getId() != null);
+	}
+
+	@Test
+	@Order(7)
+	public void naoDeveSalvarPlanetaSemNome() {
+		PlanetaDTOEntrada planetaDTO = new PlanetaDTOEntrada();
+		planetaDTO.setNome(null);
+		planetaDTO.setClima("Semi-árido");
+		planetaDTO.setTerreno("Rochoso");
+
+		List<ErroDeEntrada> erros = client.post().uri("/planetas/").bodyValue(planetaDTO).exchange().expectStatus()
+				.isBadRequest().expectBodyList(ErroDeEntrada.class).returnResult().getResponseBody();
+
+		assertEquals("não deve ser nulo", erros.get(0).getErro());
+		assertEquals("nome", erros.get(0).getCampo());
+	}
+
+	@Test
+	@Order(8)
+	public void naoDeveSalvarPlanetaSemClima() {
+		PlanetaDTOEntrada planetaDTO = new PlanetaDTOEntrada();
+		planetaDTO.setNome("Mercurio");
+		planetaDTO.setClima(null);
+		planetaDTO.setTerreno("Rochoso");
+
+		List<ErroDeEntrada> erros = client.post().uri("/planetas/").bodyValue(planetaDTO).exchange().expectStatus()
+				.isBadRequest().expectBodyList(ErroDeEntrada.class).returnResult().getResponseBody();
+
+		assertEquals("não deve ser nulo", erros.get(0).getErro());
+		assertEquals("clima", erros.get(0).getCampo());
+	}
+
+	@Test
+	@Order(9)
+	public void naoDeveSalvarPlanetaSemTerreno() {
+		PlanetaDTOEntrada planetaDTO = new PlanetaDTOEntrada();
+		planetaDTO.setNome("Mercurio");
+		planetaDTO.setClima("Frio");
+		planetaDTO.setTerreno(null);
+
+		List<ErroDeEntrada> erros = client.post().uri("/planetas/").bodyValue(planetaDTO).exchange().expectStatus()
+				.isBadRequest().expectBodyList(ErroDeEntrada.class).returnResult().getResponseBody();
+
+		assertEquals("não deve ser nulo", erros.get(0).getErro());
+		assertEquals("terreno", erros.get(0).getCampo());
+	}
+
+	@Test
+	@Order(10)
+	public void naoDeveSalvarPlanetaComNomeVazio() {
+		PlanetaDTOEntrada planetaDTO = new PlanetaDTOEntrada();
+		planetaDTO.setNome("");
+		planetaDTO.setClima("Semi-árido");
+		planetaDTO.setTerreno("Rochoso");
+
+		List<ErroDeEntrada> erros = client.post().uri("/planetas/").bodyValue(planetaDTO).exchange().expectStatus()
+				.isBadRequest().expectBodyList(ErroDeEntrada.class).returnResult().getResponseBody();
+
+		assertEquals("não deve estar vazio", erros.get(0).getErro());
+		assertEquals("nome", erros.get(0).getCampo());
+	}
+
+	@Test
+	@Order(11)
+	public void naoDeveSalvarPlanetaComClimaVazio() {
+		PlanetaDTOEntrada planetaDTO = new PlanetaDTOEntrada();
+		planetaDTO.setNome("Mercurio");
+		planetaDTO.setClima("");
+		planetaDTO.setTerreno("Rochoso");
+
+		List<ErroDeEntrada> erros = client.post().uri("/planetas/").bodyValue(planetaDTO).exchange().expectStatus()
+				.isBadRequest().expectBodyList(ErroDeEntrada.class).returnResult().getResponseBody();
+
+		assertEquals("não deve estar vazio", erros.get(0).getErro());
+		assertEquals("clima", erros.get(0).getCampo());
+	}
+
+	@Test
+	@Order(12)
+	public void naoDeveSalvarPlanetaComTerrenoVazio() {
+		PlanetaDTOEntrada planetaDTO = new PlanetaDTOEntrada();
+		planetaDTO.setNome("Mercurio");
+		planetaDTO.setClima("Frio");
+		planetaDTO.setTerreno("");
+
+		List<ErroDeEntrada> erros = client.post().uri("/planetas/").bodyValue(planetaDTO).exchange().expectStatus()
+				.isBadRequest().expectBodyList(ErroDeEntrada.class).returnResult().getResponseBody();
+
+		assertEquals("não deve estar vazio", erros.get(0).getErro());
+		assertEquals("terreno", erros.get(0).getCampo());
+	}
+
+	@Test
+	@Order(13)
+	public void deveSalvarPlanetaPesquisandoTotalDeAparicoes() {
+		PlanetaDTOEntrada planetaDTO = new PlanetaDTOEntrada();
+		planetaDTO.setNome("Tatooine");
+		planetaDTO.setClima("Frio");
+		planetaDTO.setTerreno("Arenoso");
+
+		Planeta salvo = client.post().uri("/planetas/").bodyValue(planetaDTO).exchange().expectStatus().isCreated()
+				.expectBody(Planeta.class).returnResult().getResponseBody();
+
+		assertEquals(5, salvo.getQtdAparicoesFilmes());
 	}
 }

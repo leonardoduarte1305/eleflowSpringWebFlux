@@ -1,29 +1,26 @@
 package br.com.processo.principal.repository;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import org.junit.Assert;
-import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import br.com.processo.principal.controller.PlanetaDTOEntrada;
 import br.com.processo.principal.document.Planeta;
-import br.com.processo.principal.service.PlanetaService;
 
-//@RunWith(SpringRunner.class)
-@SpringBootTest
-@WebFluxTest
+//@SpringBootTest
+//@WebFluxTest
+@DataMongoTest
+@ExtendWith(SpringExtension.class)
 public class PlanetaRepositoryTest {
 
-	@MockBean
-	PlanetaRepository repository;
+	@Autowired
+	private PlanetaRepository repository;
 
-	@MockBean
-	PlanetaService service;
-
-	// @Test
+	@Test
 	public void deveSalvarUmNovoPlaneta() {
 
 		PlanetaDTOEntrada planetaDTO = new PlanetaDTOEntrada();
@@ -33,7 +30,7 @@ public class PlanetaRepositoryTest {
 
 		Planeta planetaSalvo = repository.save(new Planeta(planetaDTO)).block();
 
-		Assert.assertEquals(planetaSalvo.getId(), is(notNullValue()));
+		assertNotNull(planetaSalvo.getId());
 	}
 
 }
