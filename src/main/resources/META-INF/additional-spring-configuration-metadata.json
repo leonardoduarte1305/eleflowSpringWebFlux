@@ -1,0 +1,5 @@
+{"properties": [{
+  "name": "url.base",
+  "type": "java.lang.String",
+  "description": "URL_BASE: uri base dos planetas do StarWars: https://swapi.py4e.com/api/planets/"
+}]}
