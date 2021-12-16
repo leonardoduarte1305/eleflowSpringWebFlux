@@ -3,12 +3,12 @@ package br.com.processo.principal.controller;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.Setter;
 
-@Data
-@ToString
+@Getter
+@Setter
 @NoArgsConstructor
 public class PlanetaDTOEntrada {
 

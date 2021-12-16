@@ -1,13 +1,13 @@
-package br.com.processo.LeoDuarteJavaBackWebFlux;
+package br.com.processo.principal;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class LeoDuarteJavaBackWebFluxApplicationTests {
+public class LeoDuarteJavaBackWebFluxApplicationTests {
 
 	@Test
-	void contextLoads() {
+	public void contextLoads() {
 	}
 
 }

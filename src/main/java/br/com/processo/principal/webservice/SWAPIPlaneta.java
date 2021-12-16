@@ -57,10 +57,4 @@ public class SWAPIPlaneta implements Serializable {
 	@JsonProperty("url")
 	private String url;
 
-	@Override
-	public String toString() {
-		return "SWAPIPlaneta [Nome: " + name + ", Clima: " + climate + ", Terreno: " + terrain + ", Apareceu: "
-				+ films.size() + " vezes na série]\n";
-	}
-
 }

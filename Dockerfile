@@ -4,6 +4,7 @@ ARG APP_NAME=target/*.jar
 COPY ${APP_NAME} api.jar
 
 ENV MONGO_DB=${MONGO_DB}
+ENV PORT=${PORT:8080}
 
 EXPOSE 8080
 

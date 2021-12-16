@@ -11,8 +11,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import br.com.processo.principal.controller.PlanetaDTOEntrada;
 import br.com.processo.principal.document.Planeta;
 
-//@SpringBootTest
-//@WebFluxTest
 @DataMongoTest
 @ExtendWith(SpringExtension.class)
 public class PlanetaRepositoryTest {

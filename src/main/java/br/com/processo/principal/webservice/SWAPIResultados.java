@@ -26,9 +26,4 @@ public class SWAPIResultados implements Serializable {
 	@JsonProperty("results")
 	private List<SWAPIPlaneta> results;
 
-	@Override
-	public String toString() {
-		return "SWAPIResultados [count=" + count + ", next=" + next + ", previous=" + previous + "]";
-	}
-
 }

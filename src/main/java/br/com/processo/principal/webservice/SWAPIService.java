@@ -14,13 +14,11 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.processo.principal.document.Planeta;
-import io.github.cdimascio.dotenv.Dotenv;
 import reactor.core.publisher.Flux;
 
 public class SWAPIService {
 
-	private static Dotenv env = Dotenv.configure().load();
-	private static String URL_BASE = env.get("URL_BASE");
+	private static String URL_BASE = "https://swapi.py4e.com/api/planets/";
 
 	private HttpClient client;
 	private ObjectMapper mapper;
