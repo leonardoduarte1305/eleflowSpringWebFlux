@@ -11,7 +11,7 @@
 	</parent>
 	<groupId>br.com.processo</groupId>
 	<artifactId>LeoDuarteJavaBackWebFlux</artifactId>
-	<version>1.0</version>
+	<version>1.0.1</version>
 	<name>LeoDuarteJavaBackWebFlux</name>
 	<description>StarWars e WebFlux</description>
 	<properties>
